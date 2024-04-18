@@ -1,3 +1,4 @@
+import { createAuthors, getallAuthors } from "../Services/Authors.service";
 import {
   Table,
   TableBody,
@@ -18,10 +19,11 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Authors = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [authors, setAuthors] = useState([]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -29,64 +31,17 @@ const Authors = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const authors = [
-    {
-      first_name: "John",
-      last_name: "Doe",
-      email: "randomemail@uu.com",
-    },
-    {
-      first_name: "Author1",
-      last_name: "Last1",
-      email: "author1@example.com",
-    },
-    {
-      first_name: "Author2",
-      last_name: "Last2",
-      email: "author2@example.com",
-    },
-    {
-      first_name: "Author3",
-      last_name: "Last3",
-      email: "author3@example.com",
-    },
-    {
-      first_name: "Author4",
-      last_name: "Last4",
-      email: "author4@example.com",
-    },
-    {
-      first_name: "Author5",
-      last_name: "Last5",
-      email: "author5@example.com",
-    },
-    {
-      first_name: "Author6",
-      last_name: "Last6",
-      email: "author6@example.com",
-    },
-    {
-      first_name: "Author7",
-      last_name: "Last7",
-      email: "author7@example.com",
-    },
-    {
-      first_name: "Author8",
-      last_name: "Last8",
-      email: "author8@example.com",
-    },
-    {
-      first_name: "Author9",
-      last_name: "Last9",
-      email: "author9@example.com",
-    },
-    {
-      first_name: "Author10",
-      last_name: "Last10",
-      email: "author10@example.com",
-    },
-  ];
+  useEffect(() => {
+    const loadAuthors = async () => {
+      const data = await getallAuthors();
+      setAuthors([...data]);
+    };
+    loadAuthors();
+  }, []);
+  const handleAdd= (new_author)=> {
+    setAuthors([...authors, new_author])
+   setIsModalOpen(false);
+  }
 
   return (
     <div className={"h-full overflow-y-auto p-5"}>
@@ -97,7 +52,7 @@ const Authors = () => {
         <div>
           <Button className={"ml-3"} onClick={openModal}>
             <CirclePlus className={"size-4"} />
-            <span className={"ml-2"}>New author</span>
+            <span className={"ml-2"}>New Author</span>
           </Button>
         </div>
       </div>
@@ -123,13 +78,26 @@ const Authors = () => {
           </TableBody>
         </Table>
       </div>
-      <AddAuthorsModal isOpen={isModalOpen} onClose={closeModal} />
+      <AddAuthorsModal isOpen={isModalOpen} onClose={closeModal} handleAdd={handleAdd}  />
     </div>
   );
 };
 export default Authors;
 
-export function AddAuthorsModal({ isOpen, onClose }) {
+export function AddAuthorsModal({ isOpen, onClose, handleAdd }) {
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleCreateAuthors = async () => {
+    try {
+      const data = await createAuthors(first_name, last_name, email);
+      handleAdd(data);
+    } catch (err) {
+      console.log("Something Went Wrong");
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
@@ -149,6 +117,7 @@ export function AddAuthorsModal({ isOpen, onClose }) {
               id="first_name"
               placeholder="Enter first name"
               className="col-span-3"
+              onChange={(ev) => setFirst_name(ev.target.value)}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -159,6 +128,7 @@ export function AddAuthorsModal({ isOpen, onClose }) {
               id="last_name"
               placeholder="Enter last name"
               className="col-span-3"
+              onChange={(ev) => setLast_name(ev.target.value)}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -169,11 +139,14 @@ export function AddAuthorsModal({ isOpen, onClose }) {
               id="email"
               placeholder="Enter email address"
               className="col-span-3"
+              onChange={(ev) => setEmail(ev.target.value)}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save</Button>
+          <Button type="submit" onClick={handleCreateAuthors}>
+            Save
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,7 +1,7 @@
 import SideBar from "@/components/SideBar.tsx";
 import { Outlet } from "react-router-dom";
 
-const KG = () => {
+const KH = () => {
   return (
     <div
       className={
@@ -15,4 +15,4 @@ const KG = () => {
     </div>
   );
 };
-export default KG;
+export default KH;

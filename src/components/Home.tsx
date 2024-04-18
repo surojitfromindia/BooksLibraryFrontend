@@ -13,15 +13,14 @@ const Home = () => {
         <div className={"flex items-baseline h-fit"}>
           <div
             className={
-              "size-16  items-center justify-center flex flex-col bg-background rounded shadow text-primary"
+              "h-28 w-32 bg-background rounded shadow text-primary"
             }
           >
-            <BookCopy className={"size-5"} />
-            <span className={"text-xs mt-2"}>K.G</span>
+            <BookCopy className={"size-10"}/>
+            <span className={"text-xs mt-2 h-10 w-5"}>Knowledge is the most Powerful Tool</span>
           </div>
           <div className={"flex flex-col ml-4"}>
-            <span className={"text-xl "}>Knowledge</span>
-            <span className={"text-sm"}>Garden</span>
+          <span className={"text-xl"}>Knowledge Hub</span>
           </div>
         </div>
 
@@ -38,7 +37,7 @@ const Home = () => {
       <div className={"grow flex flex-col justify-end"}>
         <blockquote className="space-y-2">
           <p className="text-lg">
-            “Knowledge garden (K.G) is an library management software.”
+            “Knowledge Hub(K.H) is a Library Management Software.”
           </p>
           <footer className="text-sm">Reducer</footer>
         </blockquote>

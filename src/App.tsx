@@ -1,11 +1,11 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "@/components/Home.tsx";
-import KG from "@/components/KG.tsx";
 import Authors from "@/components/Authors.tsx";
 import Books from "@/components/Books.tsx";
 import Members from "@/components/Members.tsx";
 import AddMember from "@/components/AddMember.tsx";
+import KH from "@/components/KH";
 
 function App() {
   /*
@@ -21,7 +21,7 @@ function App() {
     },
     {
       path: "/app",
-      element: <KG />,
+      element: <KH />,
       children: [
         {
           path: "authors",
