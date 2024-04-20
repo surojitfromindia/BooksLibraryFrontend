@@ -29,5 +29,13 @@ const getallAuthors= async()=>{
         throw error;
       }
 };
+const deleteAuthors= async()=> {
+  try{
+
+  }
+  catch(error){
+    
+  }
+}
 
 export {createAuthors, getallAuthors}
