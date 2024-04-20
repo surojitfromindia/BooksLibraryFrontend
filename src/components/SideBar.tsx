@@ -12,7 +12,7 @@ const SideBar = () => {
       >
         <ChevronLeft className={"w-4 h-4 -ml-0.5 text-primary-foreground"} />
       </div>
-      <h2 className={"text-xl text-primary font-semibold"}>Knowledge Hub</h2>
+      <h2 className={"text-xl text-primary font-semibold tracking-wider"}>Knowledge Hub</h2>
       <div className={"mt-5 flex space-y-2 flex-col"}>
         <NavLink to={"/app/authors"}>
           {({ isActive }) => (
