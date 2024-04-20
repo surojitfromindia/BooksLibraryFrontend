@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURl = "http://localhost:7000/members";
+const baseURl = `${import.meta.env.VITE_BACKEND_URL}/members`;
 const createMembers = async (
   firstName: string,
   lastName: string,

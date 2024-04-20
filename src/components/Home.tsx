@@ -10,14 +10,13 @@ const Home = () => {
       }
     >
       <div className={"flex items-center justify-between"}>
-        <div className={"flex items-baseline h-fit"}>
+        <div className={"flex items-center h-fit"}>
           <div
             className={
-              "h-28 w-32 bg-background rounded shadow text-primary"
+              "size-12 m-auto p-2 flex justify-center items-center  bg-background rounded shadow text-primary"
             }
           >
-            <BookCopy className={"size-10"}/>
-            <span className={"text-xs mt-2 h-10 w-5"}>Knowledge is the most Powerful Tool</span>
+            <BookCopy className={"size-6"}/>
           </div>
           <div className={"flex flex-col ml-4"}>
           <span className={"text-xl"}>Knowledge Hub</span>
@@ -25,7 +24,7 @@ const Home = () => {
         </div>
 
         <div>
-          {/*on this button click goes to the authors page as it is a link to the authors page*/}
+          {/*on this button click goes to the author page as it is a link to the author page*/}
           <Link to={"/app/authors"}>
             <Button variant={"secondary"} className={"uppercase text-xs"}>
               Dashboard
