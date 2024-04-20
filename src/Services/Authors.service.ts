@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURl = "http://localhost:7000/authors";
+const baseURl = `${import.meta.env.VITE_BACKEND_URL}/authors`;
 const createAuthors= async(
     firstName: string,
   lastName: string,
