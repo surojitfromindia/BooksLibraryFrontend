@@ -5,7 +5,11 @@ const createMembers = async (
   firstName: string,
   lastName: string,
   email: string,
-  memberType: string
+  memberType: string,
+  gender: string,
+  contact: string,
+  dob: string,
+  join_date: string
 ) => {
   try {
     const payload = {
@@ -13,7 +17,10 @@ const createMembers = async (
       last_name: lastName,
       email: email,
       member_type: memberType,
-     
+      gender: gender,
+      contact_number: contact,
+      dob: dob,
+      join_date: join_date,
     };
     const Response = await axios.post(baseURl, payload);
     return Response.data;
@@ -49,5 +56,33 @@ const deleteMember = async (delId: string) => {
     throw error;
   }
 };
+const updateMembers = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  memberType: string,
+  gender: string,
+  contact: string,
+  dob: string,
+  join_date: string
+) => {
+  try {
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      member_type: memberType,
+      gender: gender,
+      contact_number: contact,
+      dob: dob,
+      join_date: join_date,
+    };
+    const Response = await axios.put(baseURl, payload);
+    return Response.data;
+  } catch (error) {
+    console.log("Can not Update", error);
+    throw error;
+  }
+};
 
-export { createMembers, getallMembers, getoneMember, deleteMember };
+export { createMembers, getallMembers, getoneMember, deleteMember, updateMembers };

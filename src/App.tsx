@@ -8,12 +8,6 @@ import AddMember from "@/components/AddMember.tsx";
 import KH from "@/components/KH";
 
 function App() {
-  /*
-    creating a router with the routes
-    this function take an array of routes.
-    each item of array is object of a path, and the component to render.
-    we can have nested routes by adding children to the route object.
-   */
   const router = createBrowserRouter([
     {
       path: "/",
@@ -40,9 +34,13 @@ function App() {
             element: <AddMember />,
         },
         {
+          path: "members/edit/:memberId",
+          element: <AddMember />,
+      },
+        {
             path: "members",
             element: <Members />,
-        }
+        },
 
       ],
     },

@@ -1,6 +1,8 @@
 import { BookCopy } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
+import { Toaster } from "./ui/toaster";
+
 
 const Home = () => {
   return (
@@ -41,6 +43,7 @@ const Home = () => {
           <footer className="text-sm">Reducer</footer>
         </blockquote>
       </div>
+      <Toaster />
     </div>
   );
 };

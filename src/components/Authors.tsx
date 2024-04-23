@@ -1,4 +1,8 @@
-import { createAuthors, getallAuthors } from "../Services/Authors.service";
+import {
+  createAuthors,
+  deleteAuthor,
+  getallAuthors,
+} from "../Services/Authors.service";
 import {
   Table,
   TableBody,
@@ -7,7 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CirclePlus } from "lucide-react";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { CirclePlus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 
 import {
@@ -24,6 +30,7 @@ import { useEffect, useState } from "react";
 const Authors = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [authors, setAuthors] = useState([]);
+  const { toast } = useToast()
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -32,16 +39,27 @@ const Authors = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    const loadAuthors = async () => {
+    const loadAuthors = async () => { 
       const data = await getallAuthors();
       setAuthors([...data]);
     };
     loadAuthors();
   }, []);
-  const handleAdd= (new_author)=> {
-    setAuthors([...authors, new_author])
-   setIsModalOpen(false);
-  }
+  const handleAdd = (new_author) => {
+    setAuthors([...authors, new_author]);
+    setIsModalOpen(false);
+    toast({
+      title: "Successfully",
+      description: "Authors Added",
+    })
+  };
+  const handleDelete = async (delId: string) => {
+    await deleteAuthor(delId);
+    const tempArray = authors.filter((author) => {
+      return author._id !== delId;
+    })
+    setAuthors(tempArray);
+  };
 
   return (
     <div className={"h-full overflow-y-auto p-5"}>
@@ -73,12 +91,28 @@ const Authors = () => {
                 </TableCell>
                 <TableCell>{author.last_name}</TableCell>
                 <TableCell>{author.email}</TableCell>
+                <TableCell>
+                  {" "}
+                  <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"h-8 w-8"}
+                    onClick={()=> {handleDelete(author._id)}}
+                  >
+                    <Trash className={"w-4 h-4 text-destructive"} />
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <Toaster />
       </div>
-      <AddAuthorsModal isOpen={isModalOpen} onClose={closeModal} handleAdd={handleAdd}  />
+      <AddAuthorsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        handleAdd={handleAdd}
+      />
     </div>
   );
 };
