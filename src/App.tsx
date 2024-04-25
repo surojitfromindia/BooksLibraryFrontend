@@ -30,18 +30,17 @@ function App() {
           element: <Books />,
         },
         {
-            path: "members/add",
-            element: <AddMember />,
+          path: "members/add",
+          element: <AddMember />,
         },
         {
           path: "members/edit/:memberId",
           element: <AddMember />,
-      },
-        {
-            path: "members",
-            element: <Members />,
         },
-
+        {
+          path: "members",
+          element: <Members />,
+        },
       ],
     },
   ]);
