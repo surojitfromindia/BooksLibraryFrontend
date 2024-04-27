@@ -91,8 +91,7 @@ const Authors = () => {
                 </TableCell>
                 <TableCell>{author.last_name}</TableCell>
                 <TableCell>{author.email}</TableCell>
-                <TableCell>
-                  {" "}
+                <TableCell className={"flex justify-end"}>
                   <Button
                     size={"icon"}
                     variant={"outline"}

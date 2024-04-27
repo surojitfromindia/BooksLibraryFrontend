@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils.ts";
 const SideBar = () => {
   return (
     <div className="w-[250px] bg-muted h-full p-5 relative  shadow border-r-[0.5px]">
-      <div
-        className={
-          "h-8 w-8 inline-flex items-center justify-center bg-primary rounded-full absolute -right-4 bottom-4 cursor-pointer"
-        }
-      >
-        <ChevronLeft className={"w-4 h-4 -ml-0.5 text-primary-foreground"} />
-      </div>
+      {/*<div*/}
+      {/*  className={*/}
+      {/*    "h-8 w-8 inline-flex items-center justify-center bg-primary rounded-full absolute -right-4 bottom-4 cursor-pointer"*/}
+      {/*  }*/}
+      {/*>*/}
+      {/*  <ChevronLeft className={"w-4 h-4 -ml-0.5 text-primary-foreground"} />*/}
+      {/*</div>*/}
       <h2 className={"text-xl text-primary font-semibold tracking-wider"}>Knowledge Hub</h2>
       <div className={"mt-5 flex space-y-2 flex-col"}>
         <NavLink to={"/app/authors"}>

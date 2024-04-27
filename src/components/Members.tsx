@@ -91,7 +91,7 @@ const Members = () => {
                     {member.member_type.toUpperCase()}
                   </Badge>}
                 </TableCell>
-                <TableCell>
+                <TableCell className={"flex justify-end"}>
                   <Link to={`/app/members/edit/${member._id}`}>
                     <Button
                       size={"icon"}
