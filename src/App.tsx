@@ -6,6 +6,7 @@ import Books from "@/components/Books.tsx";
 import Members from "@/components/Members.tsx";
 import AddMember from "@/components/AddMember.tsx";
 import KH from "@/components/KH";
+import AddBook from "@/components/AddBook.tsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,6 +29,10 @@ function App() {
         {
           path: "books",
           element: <Books />,
+        },
+        {
+          path: "books/add",
+          element: <AddBook />,
         },
         {
           path: "members/add",

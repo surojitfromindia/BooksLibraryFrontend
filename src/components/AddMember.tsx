@@ -150,9 +150,7 @@ const AddMember = () => {
               </Select>
             </div>
           </div>
-
           <Separator className={"my-6"} />
-
           {/*other details section*/}
           <div className={"flex gap-y-6 flex-col max-w-2xl py-5"}>
             <p className={"text-xl"}>Other</p>
