@@ -14,10 +14,10 @@ import { getallBooks } from "@/Services/Books.service";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
-  useEffect(()=>{
-    const loadBooks= async() => {
-      const data= await getallBooks();
-      setBooks([...data])
+  useEffect(() => {
+    const loadBooks = async () => {
+      const data = await getallBooks();
+      setBooks([...data]);
     };
     loadBooks();
   }, []);
@@ -54,7 +54,11 @@ const Books = () => {
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.isbn}</TableCell>
                 <TableCell>{book.edition}</TableCell>
-                <TableCell>{book.author_ids}</TableCell>
+                <TableCell>
+                  {book.authors.map(
+                    (auth) => `${auth.first_name} ${auth.last_name}`
+                  ).join(', ')}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
