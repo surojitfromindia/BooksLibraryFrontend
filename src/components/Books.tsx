@@ -9,10 +9,18 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getallBooks } from "@/Services/Books.service";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
+  useEffect(()=>{
+    const loadBooks= async() => {
+      const data= await getallBooks();
+      setBooks([...data])
+    };
+    loadBooks();
+  }, []);
 
   return (
     <div className={"h-full overflow-y-auto p-5"}>
@@ -47,7 +55,6 @@ const Books = () => {
                 <TableCell>{book.isbn}</TableCell>
                 <TableCell>{book.edition}</TableCell>
                 <TableCell>{book.author_ids}</TableCell>
-                <TableCell></TableCell>
               </TableRow>
             ))}
           </TableBody>

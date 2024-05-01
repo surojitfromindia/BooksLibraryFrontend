@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input.tsx";
 
 import { Separator } from "@/components/ui/separator.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, XCircle } from "lucide-react";
 
 import {
@@ -18,6 +18,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { createBooks, getallBooks } from "@/Services/Books.service";
+import { useNavigate, useParams } from "react-router";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { getallAuthors } from "@/Services/Authors.service";
 
 const allKeywords = [
   "Adventure",
@@ -35,26 +40,15 @@ const allKeywords = [
 ];
 
 const AddBook = () => {
-  const [allAuthors] = useState([
-    {
-      label: "Ray Bradbury",
-      value: "author1",
-    },
-    {
-      label: "Jim corbett",
-      value: "author2",
-    },
-    {
-      label: "Satyajit Ray",
-      value: "author3",
-    },
-    {
-      label: "Ruskin Bond",
-      value: "author4",
-    },
-  ]);
+  const [title, setTitle] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [edition, setEdition] = useState("");
+  const [allAuthors, setAllAuthors] = useState([]);
   const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
+  const navi = useNavigate();
+  const { toast } = useToast();
+  const { memberId } = useParams();
 
   const handleSelectAuthor = (author) => {
     setSelectedAuthors([...selectedAuthors, author]);
@@ -62,6 +56,49 @@ const AddBook = () => {
   const handleSelectKeyword = (kw) => {
     setSelectedKeywords([...selectedKeywords, kw]);
   };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        title,
+        isbn,
+        edition,
+        authorIds : selectedAuthors.map((ath)=> {return ath.value}),
+        keyWords : selectedKeywords,
+      };
+      console.log(payload);
+      await createBooks(payload);
+      toast({
+        title: "Congratulation",
+        description: "Author is Added...",
+      });
+      navi("/app/books");
+    } catch {
+      toast({
+        title: "Sorry",
+        description: "Author does not Added",
+      });
+    }
+  };
+  const handleCancel = () => {
+    navi("/app/books");
+  };
+  const handleClear =(index) => {
+    const clearAuthor= selectedAuthors.filter((del,ind)=> index !== ind );
+    setSelectedAuthors(clearAuthor);
+  };
+  useEffect(() => {
+    const loadAuthors = async () => {
+      const data = await getallAuthors();
+      const mappedAuthors = data.map((author) => {
+        return {
+          label: `${author.first_name} ${author.last_name}`,
+          value: author._id,
+        };
+      });
+      setAllAuthors([...mappedAuthors]);
+    };
+    loadAuthors();
+  }, []);
 
   return (
     <div className={"py-2 flex flex-col h-screen"}>
@@ -69,10 +106,10 @@ const AddBook = () => {
       <div className={"flex justify-between shadow px-5 py-2"}>
         <h1 className={"text-2xl text-primary"}>Add New Book</h1>
         <div>
-          <Button variant={"outline"} className={"mr-3"} onClick={() => {}}>
+          <Button variant={"outline"} className={"mr-3"} onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={() => {}}>Save</Button>
+          <Button onClick={handleSave}>Save</Button>
         </div>
       </div>
 
@@ -90,7 +127,9 @@ const AddBook = () => {
                 type="text"
                 id="title"
                 className={"px-2 py-1 border rounded w-1/2"}
-                placeholder={"Enter book title"}
+                placeholder={"Enter Book title"}
+                value={title}
+                onChange={(ev) => setTitle(ev.target.value)}
               />
             </div>
             <div className={"flex items-center"}>
@@ -101,7 +140,9 @@ const AddBook = () => {
                 type="text"
                 id="isbn"
                 className={"px-2 py-1 border rounded w-1/2"}
-                placeholder={"Enter ISBN number"}
+                placeholder={"Enter ISBN Code"}
+                value={isbn}
+                onChange={(ev) => setIsbn(ev.target.value)}
               />
             </div>
             <div className={"flex items-center"}>
@@ -112,23 +153,26 @@ const AddBook = () => {
                 type="text"
                 id="edition"
                 className={"px-2 py-1 border rounded w-1/2"}
-                placeholder={"Enter edition"}
+                placeholder={"Enter Edition"}
+                value={edition}
+                onChange={(ev) => setEdition(ev.target.value)}
               />
             </div>
           </div>
           <Separator className={"my-6"} />
           {/*other details section*/}
           <div className={"flex gap-y-6 flex-col max-w-2xl py-5"}>
-            <p className={"text-xl"}>Other</p>
+            <p className={"text-xl"}>Others</p>
             <div className={"flex items-baseline "}>
               <Label htmlFor="authors" className={"w-1/4 mt-2"}>
                 Author(s)
               </Label>
-
+              <Toaster />
               {/*list of authors*/}
               <div className={"flex flex-wrap w-3/4 gap-2 items-center"}>
-                {selectedAuthors.map((author) => (
+                {selectedAuthors.map((author, index) => (
                   <Badge
+                    key={index}
                     variant={"outline"}
                     className={" w-40 flex justify-between p-2 rounded-lg"}
                   >
@@ -140,6 +184,7 @@ const AddBook = () => {
                         className={
                           "cursor-pointer w-4 h-4 ml-1 text-destructive/30 hover:text-destructive"
                         }
+                        onClick={()=> {handleClear(index)}}
                       />
                     </span>
                   </Badge>
@@ -160,7 +205,7 @@ const AddBook = () => {
                   <PopoverContent className={"p-0"} align={"start"}>
                     <Command>
                       <CommandList>
-                        <CommandInput placeholder="Search authors..." />
+                        <CommandInput placeholder="Search Authors..." />
                         {[...allAuthors].map((author) => (
                           <CommandItem
                             key={author.value}
@@ -184,8 +229,9 @@ const AddBook = () => {
                 Keyword(s)
               </Label>
               <div className={"flex flex-wrap w-3/4 gap-2 items-center"}>
-                {selectedKeywords.map((kw) => (
+                {selectedKeywords.map((kw, index) => (
                   <Badge
+                    key={index}
                     variant={"outline"}
                     className={"flex justify-between p-2 rounded-lg"}
                   >
@@ -215,9 +261,9 @@ const AddBook = () => {
                     <Command>
                       <CommandList>
                         <CommandInput placeholder="Search keywords..." />
-                        {[...allKeywords].map((kw) => (
+                        {[...allKeywords].map((kw, index) => (
                           <CommandItem
-                            key={kw}
+                            key={index}
                             value={kw}
                             onSelect={() => {
                               handleSelectKeyword(kw);

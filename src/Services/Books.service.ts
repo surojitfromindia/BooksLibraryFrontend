@@ -2,24 +2,20 @@ import axios from "axios";
 
 const baseURl = `${import.meta.env.VITE_BACKEND_URL}/books`;
 const createBooks = async (
-  title: string,
-  isbn: number,
-  edition: string,
-  authorIds: string,
-  keyWords: string
+ bookData
 ) => {
   try {
     const payload = {
-      title: title,
-      isbn: isbn,
-      edition: edition,
-      author_ids: authorIds,
-      keywords: keyWords,
+      title: bookData.title,
+      isbn: bookData.isbn,
+      edition: bookData.edition,
+      author_ids: bookData.authorIds,
+      keywords: bookData.keyWords,
     };
-    const response = await axios.post(baseURl, payload);
+    const response= await axios.post(baseURl,payload);
     return response.data;
   } catch (error) {
-    console.log("Error", error);
+    console.log("Can not Created", error);
     throw error;
   }
 };
