@@ -35,6 +35,10 @@ function App() {
           element: <AddBook />,
         },
         {
+          path: "books/edit/:bookId",
+          element: <AddBook />,  
+        },
+        {
           path: "members/add",
           element: <AddMember />,
         },
