@@ -12,7 +12,9 @@ const SideBar = () => {
       {/*>*/}
       {/*  <ChevronLeft className={"w-4 h-4 -ml-0.5 text-primary-foreground"} />*/}
       {/*</div>*/}
-      <h2 className={"text-xl text-primary font-semibold tracking-wider"}>Knowledge Hub</h2>
+      <h2 className={"text-xl text-primary font-semibold tracking-wider"}>
+        Knowledge Hub
+      </h2>
       <div className={"mt-5 flex space-y-2 flex-col"}>
         <NavLink to={"/app/authors"}>
           {({ isActive }) => (
@@ -38,7 +40,7 @@ const SideBar = () => {
             </div>
           )}
         </NavLink>
-          <NavLink to={"/app/members"}>
+        <NavLink to={"/app/members"}>
           {({ isActive }) => (
             <div
               className={cn(
@@ -47,6 +49,18 @@ const SideBar = () => {
               )}
             >
               <span className={"ml-2"}>Members</span>
+            </div>
+          )}
+        </NavLink>
+        <NavLink to={"/app/checkouts"}>
+          {({ isActive }) => (
+            <div
+              className={cn(
+                "h-10 flex items-center rounded px-2 w-full",
+                isActive ? "bg-primary text-primary-foreground" : "text-primary"
+              )}
+            >
+              <span className={"ml-2"}>Checkouts</span>
             </div>
           )}
         </NavLink>
