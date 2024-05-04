@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CirclePlus, FileX, PenLine } from "lucide-react";
+import { CirclePlus, Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -55,9 +55,27 @@ const Books = () => {
                 <TableCell>{book.isbn}</TableCell>
                 <TableCell>{book.edition}</TableCell>
                 <TableCell>
-                  {book.authors.map(
-                    (auth) => `${auth.first_name} ${auth.last_name}`
-                  ).join(', ')}
+                  {book.author_list
+                    .map((auth) => `${auth.first_name} ${auth.last_name}`)
+                    .join(", ")}
+                </TableCell>
+                <TableCell className={"flex justify-end"}>
+                  <Link to={`/app/books/edit/${book._id}`}>
+                    <Button
+                      size={"icon"}
+                      variant={"outline"}
+                      className={"h-8 w-8"}
+                    >
+                      <Pencil className={"w-4 h-4 text-primary"} />
+                    </Button>
+                  </Link>
+                  <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"h-8 w-8 ml-2"}
+                  >
+                    <Trash2 className={"w-4 h-4 text-red-500"} />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

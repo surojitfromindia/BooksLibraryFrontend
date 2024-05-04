@@ -8,6 +8,7 @@ import AddMember from "@/components/AddMember.tsx";
 import KH from "@/components/KH";
 import AddBook from "@/components/AddBook.tsx";
 import Checkouts from "@/components/Checkouts.tsx";
+import AddCheckout from "@/components/AddCheckout.tsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -37,7 +38,7 @@ function App() {
         },
         {
           path: "books/edit/:bookId",
-          element: <AddBook />,  
+          element: <AddBook />,
         },
         {
           path: "members/add",
@@ -54,6 +55,14 @@ function App() {
         {
           path: "checkouts",
           element: <Checkouts />,
+        },
+        {
+          path: "checkouts/add/",
+          element: <AddCheckout />,
+        },
+        {
+          path: "checkouts/edit/:checkoutId",
+          element: <AddCheckout />,
         },
       ],
     },
