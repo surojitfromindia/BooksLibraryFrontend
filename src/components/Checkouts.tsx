@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
-import { CirclePlus, Pencil, Trash2 } from "lucide-react";
+import {CirclePlus, Eye, Pencil, Trash2, Undo2} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import { DateTime } from "luxon";
 const Checkouts = () => {
   const allCheckouts = [
     {
-        _id: "1",
+      _id: "1",
       member_details: {
         first_name: "John",
         last_name: "Doe",
@@ -32,7 +32,7 @@ const Checkouts = () => {
       over_day: 0,
     },
     {
-        _id: "2",
+      _id: "2",
       // another member
       member_details: {
         first_name: "Jane",
@@ -96,11 +96,7 @@ const Checkouts = () => {
                 </TableCell>
                 <TableCell>{chk.has_return ? "Yes" : "No"}</TableCell>
                 <TableCell>
-                  <Badge
-                    className={
-                      "bg-red-200 text-red-600 hover:bg-red-300"
-                    }
-                  >
+                  <Badge className={"bg-red-200 text-red-600 hover:bg-red-300"}>
                     {chk.over_day}
                   </Badge>
                 </TableCell>
@@ -111,9 +107,17 @@ const Checkouts = () => {
                       variant={"outline"}
                       className={"h-8 w-8"}
                     >
-                      <Pencil className={"w-4 h-4 text-primary"} />
+                      <Eye className={"w-4 h-4 text-blue-500"} />
                     </Button>
                   </Link>
+                  <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"h-8 w-8 ml-2"}
+                  >
+                    <Undo2 className={"w-4 h-4 text-primary"} />
+                  </Button>
+
                   <Button
                     size={"icon"}
                     variant={"outline"}

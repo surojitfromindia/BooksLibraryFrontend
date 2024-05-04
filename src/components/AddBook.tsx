@@ -48,7 +48,6 @@ const AddBook = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const navi = useNavigate();
   const { toast } = useToast();
-  const { memberId } = useParams();
 
   const handleSelectAuthor = (author) => {
     setSelectedAuthors([...selectedAuthors, author]);

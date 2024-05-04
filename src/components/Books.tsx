@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CirclePlus, FileX, PenLine } from "lucide-react";
+import { CirclePlus, Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -55,7 +55,7 @@ const Books = () => {
                 <TableCell>{book.isbn}</TableCell>
                 <TableCell>{book.edition}</TableCell>
                 <TableCell>
-                  {book.author_list.map(
+                  {book.authors.map(
                     (auth) => `${auth.first_name} ${auth.last_name}`
                   ).join(', ')}
                 </TableCell>
