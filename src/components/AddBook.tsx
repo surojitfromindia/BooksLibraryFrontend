@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { createBooks, getallBooks } from "@/Services/Books.service";
+import { createBooks } from "@/Services/Books.service";
 import { useNavigate, useParams } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
@@ -48,7 +48,6 @@ const AddBook = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const navi = useNavigate();
   const { toast } = useToast();
-  const { memberId } = useParams();
 
   const handleSelectAuthor = (author) => {
     setSelectedAuthors([...selectedAuthors, author]);
