@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { createBooks, getallBooks } from "@/Services/Books.service";
+import { createBooks } from "@/Services/Books.service";
 import { useNavigate, useParams } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
@@ -85,6 +85,10 @@ const AddBook = () => {
   const handleClear =(index) => {
     const clearAuthor= selectedAuthors.filter((del,ind)=> index !== ind );
     setSelectedAuthors(clearAuthor);
+  };
+  const handleKeywordClear= (index) => {
+    const clearkeyword= selectedKeywords.filter((key,ind)=> index !== ind);
+    setSelectedKeywords(clearkeyword);
   };
   useEffect(() => {
     const loadAuthors = async () => {
@@ -241,6 +245,7 @@ const AddBook = () => {
                         className={
                           "cursor-pointer w-4 h-4 ml-1 text-destructive/30 hover:text-destructive"
                         }
+                        onClick={()=> {handleKeywordClear(index)}}
                       />
                     </span>
                   </Badge>

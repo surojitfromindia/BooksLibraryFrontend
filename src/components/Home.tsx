@@ -2,13 +2,14 @@ import { BookCopy } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "react-router-dom";
 import { Toaster } from "./ui/toaster";
+import { text } from "stream/consumers";
 
 
 const Home = () => {
   return (
     <div
       className={
-        "fixed inset-0 flex flex-col p-10 bg-primary text-primary-foreground"
+        "fixed inset-0 flex flex-col p-10 bg-purple-200 text-slate-900"
       }
     >
       <div className={"flex items-center justify-between"}>
@@ -18,7 +19,7 @@ const Home = () => {
               "size-12 m-auto p-2 flex justify-center items-center  bg-background rounded shadow text-primary"
             }
           >
-            <BookCopy className={"size-6"}/>
+            <BookCopy className={"size-6 text-zinc-700"}/>
           </div>
           <div className={"flex flex-col ml-4"}>
           <span className={"text-xl"}>Knowledge Hub</span>
@@ -28,7 +29,7 @@ const Home = () => {
         <div>
           {/*on this button click goes to the author page as it is a link to the author page*/}
           <Link to={"/app/authors"}>
-            <Button variant={"secondary"} className={"uppercase text-xs"}>
+            <Button variant={"secondary"} className={"uppercase text-xs bg-amber-500"}>
               Dashboard
             </Button>
           </Link>

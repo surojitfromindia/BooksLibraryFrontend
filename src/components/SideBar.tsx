@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils.ts";
 
@@ -12,7 +12,7 @@ const SideBar = () => {
       {/*>*/}
       {/*  <ChevronLeft className={"w-4 h-4 -ml-0.5 text-primary-foreground"} />*/}
       {/*</div>*/}
-      <h2 className={"text-xl text-primary font-semibold tracking-wider"}>
+      <h2 className={"text-xl text-gray-900 font-semibold tracking-wider"}>
         Knowledge Hub
       </h2>
       <div className={"mt-5 flex space-y-2 flex-col"}>
@@ -21,7 +21,7 @@ const SideBar = () => {
             <div
               className={cn(
                 "h-10 flex items-center rounded px-2 w-full",
-                isActive ? "bg-primary text-primary-foreground" : "text-primary"
+                isActive ? "bg-cyan-600 text-primary-foreground" : "text-cyan-600"
               )}
             >
               <span className={"ml-2"}>Authors</span>
@@ -33,7 +33,7 @@ const SideBar = () => {
             <div
               className={cn(
                 "h-10 flex items-center rounded px-2 w-full",
-                isActive ? "bg-primary text-primary-foreground" : "text-primary"
+                isActive ? "bg-cyan-600 text-primary-foreground" : "text-cyan-600"
               )}
             >
               <span className={"ml-2"}>Books</span>
@@ -45,7 +45,7 @@ const SideBar = () => {
             <div
               className={cn(
                 "h-10 flex items-center rounded px-2 w-full",
-                isActive ? "bg-primary text-primary-foreground" : "text-primary"
+                isActive ? "bg-cyan-600 text-primary-foreground" : "text-cyan-600"
               )}
             >
               <span className={"ml-2"}>Members</span>
@@ -57,7 +57,7 @@ const SideBar = () => {
             <div
               className={cn(
                 "h-10 flex items-center rounded px-2 w-full",
-                isActive ? "bg-primary text-primary-foreground" : "text-primary"
+                isActive ? "bg-cyan-600 text-primary-foreground" : "text-cyan-600"
               )}
             >
               <span className={"ml-2"}>Checkouts</span>

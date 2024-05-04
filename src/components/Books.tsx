@@ -55,7 +55,7 @@ const Books = () => {
                 <TableCell>{book.isbn}</TableCell>
                 <TableCell>{book.edition}</TableCell>
                 <TableCell>
-                  {book.authors.map(
+                  {book.author_list.map(
                     (auth) => `${auth.first_name} ${auth.last_name}`
                   ).join(', ')}
                 </TableCell>
