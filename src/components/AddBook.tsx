@@ -18,9 +18,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { createBooks } from "@/Services/Books.service";
+import { createBooks, getBookById, updateBook } from "@/Services/Books.service";
 import { useNavigate, useParams } from "react-router";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { getallAuthors } from "@/Services/Authors.service";
 
@@ -48,6 +47,8 @@ const AddBook = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const navi = useNavigate();
   const { toast } = useToast();
+  const { bookId } = useParams();
+  const isEdit = bookId !== undefined;
 
   const handleSelectAuthor = (author) => {
     setSelectedAuthors([...selectedAuthors, author]);
@@ -61,33 +62,44 @@ const AddBook = () => {
         title,
         isbn,
         edition,
-        authorIds : selectedAuthors.map((ath)=> {return ath.value}),
-        keyWords : selectedKeywords,
+        authorIds: selectedAuthors.map((ath) => {
+          return ath.value;
+        }),
+        keyWords: selectedKeywords,
       };
-      console.log(payload);
-      await createBooks(payload);
-      toast({
-        title: "Congratulation",
-        description: "Author is Added...",
-      });
+
+      if (isEdit) {
+        await updateBook(bookId, payload);
+        toast({
+          title: "Success",
+          description: "Author is Updated.",
+        });
+      } else {
+        await createBooks(payload);
+        toast({
+          title: "Success",
+          description: "Author is Added.",
+        });
+      }
+
       navi("/app/books");
     } catch {
       toast({
         title: "Sorry",
-        description: "Author does not Added",
+        description: "Operation Failed.",
       });
     }
   };
   const handleCancel = () => {
     navi("/app/books");
   };
-  const handleClear =(index) => {
-    const clearAuthor= selectedAuthors.filter((del,ind)=> index !== ind );
+  const handleClear = (index: number) => {
+    const clearAuthor = selectedAuthors.filter((del, ind) => index !== ind);
     setSelectedAuthors(clearAuthor);
   };
-  const handleKeywordClear= (index) => {
-    const clearkeyword= selectedKeywords.filter((key,ind)=> index !== ind);
-    setSelectedKeywords(clearkeyword);
+  const handleKeywordClear = (index: number) => {
+    const clearKeyword = selectedKeywords.filter((key, ind) => index !== ind);
+    setSelectedKeywords(clearKeyword);
   };
   useEffect(() => {
     const loadAuthors = async () => {
@@ -103,16 +115,44 @@ const AddBook = () => {
     loadAuthors();
   }, []);
 
+  useEffect(() => {
+    const loadBook = async () => {
+      const data = await getBookById(bookId);
+      setTitle(data.title);
+      setIsbn(data.isbn);
+      setEdition(data.edition);
+      const authors_mapped = data.author_list.map((author) => ({
+        label: `${author.first_name} ${author.last_name}`,
+        value: author._id,
+      }));
+      setSelectedAuthors(authors_mapped);
+      setSelectedKeywords(data.keywords);
+    };
+    if (!isEdit) return;
+    loadBook().catch((error) => {
+      toast({
+        title: "Sorry",
+        description: error.message,
+      });
+      navi("/app/books");
+    });
+  }, [bookId, isEdit, navi, toast]);
+
   return (
     <div className={"py-2 flex flex-col h-screen"}>
       {/*header*/}
       <div className={"flex justify-between shadow px-5 py-2"}>
-        <h1 className={"text-2xl text-primary"}>Add New Book</h1>
+        <h1 className={"text-2xl text-primary"}>
+          {isEdit ? "Edit Book" : "Add New Book"}
+        </h1>
         <div>
           <Button variant={"outline"} className={"mr-3"} onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleSave}>{
+            isEdit ? "Update" : "Save"
+
+          }</Button>
         </div>
       </div>
 
@@ -170,14 +210,15 @@ const AddBook = () => {
               <Label htmlFor="authors" className={"w-1/4 mt-2"}>
                 Author(s)
               </Label>
-              <Toaster />
               {/*list of authors*/}
               <div className={"flex flex-wrap w-3/4 gap-2 items-center"}>
                 {selectedAuthors.map((author, index) => (
                   <Badge
                     key={index}
                     variant={"outline"}
-                    className={" w-40 flex justify-between p-2 rounded-lg"}
+                    className={
+                      " overflow-hidden flex justify-between p-2 rounded-lg"
+                    }
                   >
                     <span className={"text-sm text-gray-600"}>
                       {author.label}
@@ -185,9 +226,11 @@ const AddBook = () => {
                     <span>
                       <XCircle
                         className={
-                          "cursor-pointer w-4 h-4 ml-1 text-destructive/30 hover:text-destructive"
+                          "cursor-pointer w-4 h-4 ml-3 text-destructive/30 hover:text-destructive"
                         }
-                        onClick={()=> {handleClear(index)}}
+                        onClick={() => {
+                          handleClear(index);
+                        }}
                       />
                     </span>
                   </Badge>
@@ -244,7 +287,9 @@ const AddBook = () => {
                         className={
                           "cursor-pointer w-4 h-4 ml-1 text-destructive/30 hover:text-destructive"
                         }
-                        onClick={()=> {handleKeywordClear(index)}}
+                        onClick={() => {
+                          handleKeywordClear(index);
+                        }}
                       />
                     </span>
                   </Badge>

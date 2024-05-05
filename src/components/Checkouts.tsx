@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
-import {CirclePlus, Eye, Pencil, Trash2, Undo2} from "lucide-react";
+import { CirclePlus, Eye, Pencil, Trash2, Undo2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,45 +11,19 @@ import {
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge.tsx";
 import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
+import { getAllCheckouts } from "@/Services/Checkout.service.ts";
 
 const Checkouts = () => {
-  const allCheckouts = [
-    {
-      _id: "1",
-      member_details: {
-        first_name: "John",
-        last_name: "Doe",
-        _id: "1",
-      },
-      book_details: {
-        name: "Book 1",
-        _id: "1",
-      },
-      issue_date: new Date("2021-12-25"),
-      borrowed_for: 7,
-      due_date: new Date("2022-01-01"),
-      has_return: false,
-      over_day: 0,
-    },
-    {
-      _id: "2",
-      // another member
-      member_details: {
-        first_name: "Jane",
-        last_name: "Doe",
-        _id: "2",
-      },
-      book_details: {
-        name: "Book 2",
-        _id: "2",
-      },
-      issue_date: new Date("2021-12-25"),
-      borrowed_for: 7,
-      due_date: new Date("2022-01-01"),
-      has_return: false,
-      over_day: 0,
-    },
-  ];
+  const [allCheckouts, setAllCheckouts] = useState([]);
+
+  useEffect(() => {
+    const loadCheckouts = async () => {
+      const data = await getAllCheckouts();
+      setAllCheckouts(data);
+    };
+    loadCheckouts().catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className={"h-full overflow-y-auto p-5"}>
@@ -72,7 +46,6 @@ const Checkouts = () => {
             <TableRow>
               <TableHead className="w-[200px]">Date</TableHead>
               <TableHead>Member name</TableHead>
-              <TableHead>Book name</TableHead>
               <TableHead>Borrowed for</TableHead>
               <TableHead>Due date</TableHead>
               <TableHead>Has return</TableHead>
@@ -84,20 +57,31 @@ const Checkouts = () => {
             {allCheckouts.map((chk, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">
-                  {DateTime.fromJSDate(chk.issue_date).toFormat("dd-MM-yyyy")}
+                  {DateTime.fromISO(chk.issue_date).toFormat("dd-MM-yyyy")}
                 </TableCell>
                 <TableCell>
                   {chk.member_details.first_name} {chk.member_details.last_name}
                 </TableCell>
-                <TableCell>{chk.book_details.name}</TableCell>
-                <TableCell>{chk.borrowed_for} days</TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(chk.due_date).toFormat("dd-MM-yyyy")}
+                  {
+                    DateTime.fromISO(chk.due_date).diff(
+                      DateTime.fromISO(chk.issue_date),
+                      ["days"]
+                    ).days
+                  }{" "}
+                  days
+                </TableCell>
+                <TableCell>
+                  {DateTime.fromISO(chk.due_date).toFormat("dd-MM-yyyy")}
                 </TableCell>
                 <TableCell>{chk.has_return ? "Yes" : "No"}</TableCell>
                 <TableCell>
                   <Badge className={"bg-red-200 text-red-600 hover:bg-red-300"}>
-                    {chk.over_day}
+                    {DateTime.fromISO(chk.due_date).diffNow([
+                      "days",
+                      "hours",
+                      "minutes",
+                    ]).days * -1}
                   </Badge>
                 </TableCell>
                 <TableCell className={"flex justify-end"}>

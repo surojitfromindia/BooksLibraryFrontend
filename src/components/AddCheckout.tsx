@@ -15,7 +15,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -24,46 +24,114 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx";
+import { getAllBooks } from "@/Services/Books.service.ts";
+import { getallMembers } from "@/Services/Members.service.ts";
+import { DateTime } from "luxon";
+import { createCheckout } from "@/Services/Checkout.service.ts";
 
 const AddCheckout = () => {
-  const allMembers = [
-    {
-      label: "John Doe",
-      value: "1",
-    },
+  const [allMembers, setAllMembers] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
 
-    {
-      label: "Jane Doe",
-      value: "2",
-    },
-    {
-      label: "Rajesh",
-      value: "3",
-    },
-  ];
-  const allBooks = [
-    {
-      label: "Book 1",
-      value: "1",
-    },
-
-    {
-      label: "Book 2",
-      value: "2",
-    },
-    {
-      label: "Book 3",
-      value: "3",
-    },
-  ];
-
-  const [borrowedBooks] = useState([
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [issueDate, setIssueDate] = useState(DateTime.now().toISO());
+  const [dueDate, setDueDate] = useState(
+    DateTime.now().plus({ days: 7 }).toISO()
+  );
+  const [borrowedBooks, setBorrowedBooks] = useState([
     {
       book_title: null,
       copies: 1,
       book_id: null,
     },
   ]);
+
+  useEffect(() => {
+    const loadAllBooks = async () => {
+      try {
+        const books = await getAllBooks();
+        const books_mapped = books.map((book) => ({
+          label: book.title,
+          value: book._id,
+          available_stock: book.available_stock,
+        }));
+        setAllBooks(books_mapped);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const loadAllMembers = async () => {
+      try {
+        const members = await getallMembers();
+        const members_mapped = members.map((member) => ({
+          label: `${member.first_name} ${member.last_name}`,
+          value: member._id,
+        }));
+        setAllMembers(members_mapped);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadAllBooks().catch((error) => console.error(error));
+    loadAllMembers().catch((error) => console.error(error));
+  }, []);
+
+  const handleMemberChange = (m) => {
+    setSelectedMember(m);
+  };
+  const handleIssueDateChange = (e) => {
+    setIssueDate(e.target.value);
+  };
+  const handleDueDateChange = (e) => {
+    setDueDate(e.target.value);
+  };
+  const handleBookChange = (index, book) => {
+    const newBooks = [...borrowedBooks];
+    newBooks[index] = {
+      book_title: book.label,
+      copies: 1,
+      book_id: book.value,
+    };
+    setBorrowedBooks(newBooks);
+  };
+  const handleCopiesChange = (index: number, e) => {
+    const newBooks = [...borrowedBooks];
+    newBooks[index] = {
+      ...newBooks[index],
+      copies: e.target.value,
+    };
+    setBorrowedBooks(newBooks);
+  };
+  const handleRemoveBook = (index: number) => {
+    if (borrowedBooks.length === 1) {
+      return;
+    }
+    const newBooks = borrowedBooks.filter((_, i) => i !== index);
+    setBorrowedBooks(newBooks);
+  };
+  const handleAddMore = () => {
+    setBorrowedBooks([
+      ...borrowedBooks,
+      {
+        book_title: null,
+        copies: 1,
+        book_id: null,
+      },
+    ]);
+  };
+
+  const handleSave = async () => {
+    const payload = {
+      member_id: selectedMember.value,
+      issue_date: issueDate,
+      due_date: dueDate,
+      book_list: borrowedBooks.map((book) => ({
+        book_id: book.book_id,
+        copies: book.copies,
+      })),
+    };
+    await createCheckout(payload);
+  };
 
   return (
     <div className={"py-2 flex flex-col h-screen"}>
@@ -74,7 +142,13 @@ const AddCheckout = () => {
           <Button variant={"outline"} className={"mr-3"}>
             Cancel
           </Button>
-          <Button>Save</Button>
+          <Button
+            onClick={() => {
+              handleSave();
+            }}
+          >
+            Save
+          </Button>
         </div>
       </div>
 
@@ -96,16 +170,20 @@ const AddCheckout = () => {
                     role="combobox"
                     className={"px-2 py-1 border rounded w-1/2 justify-between"}
                   >
-                    {"Select Member"}
+                    {selectedMember?.label ?? "Select Member"}
                     <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className={"p-0"} align={"start"}>
                   <Command>
                     <CommandList>
-                      <CommandInput placeholder="Search Authors..." />
+                      <CommandInput placeholder="Search members..." />
                       {[...allMembers].map((member) => (
-                        <CommandItem key={member.value} value={member.label}>
+                        <CommandItem
+                          key={member.value}
+                          value={member.label}
+                          onSelect={() => handleMemberChange(member)}
+                        >
                           {member.label}
                         </CommandItem>
                       ))}
@@ -122,6 +200,8 @@ const AddCheckout = () => {
                 type="date"
                 id="issue_date"
                 className={"px-2 py-1 border rounded w-1/2"}
+                value={DateTime.fromISO(issueDate).toFormat("yyyy-MM-dd")}
+                onChange={handleIssueDateChange}
               />
             </div>
             <div className={"flex items-center"}>
@@ -132,8 +212,21 @@ const AddCheckout = () => {
                 type="date"
                 id="due_date"
                 className={"px-2 py-1 border rounded w-1/2"}
+                value={DateTime.fromISO(dueDate).toFormat("yyyy-MM-dd")}
+                onChange={handleDueDateChange}
               />
-              <Badge className={"ml-2 h-9 rounded-md"}>10 Days</Badge>
+              <Badge variant={"outline"} className={"ml-2 h-9 rounded-md"}>
+                {
+                  DateTime.fromISO(dueDate)
+                    .diff(DateTime.fromISO(issueDate), [
+                      "days",
+                      "hours",
+                      "minutes",
+                    ])
+                    .toObject().days
+                }{" "}
+                Days
+              </Badge>
             </div>
           </div>
           <Separator className={"my-6"} />
@@ -141,7 +234,7 @@ const AddCheckout = () => {
           <div className={"flex gap-y-6 flex-col max-w-4xl py-5"}>
             <p className={"text-xl"}>Books borrowed</p>
             <div>
-              <Table>
+              <Table className={"table-fixed"}>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Book Name</TableHead>
@@ -171,10 +264,26 @@ const AddCheckout = () => {
                           <PopoverContent className={"p-0"} align={"start"}>
                             <Command>
                               <CommandList>
-                                <CommandInput placeholder="Search Authors..." />
+                                <CommandInput placeholder="Search books..." />
                                 {[...allBooks].map((b) => (
-                                  <CommandItem key={b.value} value={b.label}>
-                                    {b.label}
+                                  <CommandItem
+                                    key={b.value}
+                                    value={b.label}
+                                    onSelect={() => {
+                                      handleBookChange(index, b);
+                                    }}
+                                  >
+                                    <div
+                                      className={
+                                        "flex justify-between items-center w-full h-10"
+                                      }
+                                    >
+                                      {b.label}
+
+                                      <span className={"text-xs text-gray-500"}>
+                                        Available stock: {b.available_stock}
+                                      </span>
+                                    </div>
                                   </CommandItem>
                                 ))}
                               </CommandList>
@@ -187,10 +296,17 @@ const AddCheckout = () => {
                           type="number"
                           className={"px-2 py-1 border rounded w-1/2"}
                           value={book.copies}
+                          onChange={(e) => handleCopiesChange(index, e)}
                         />
                       </TableCell>
                       <TableCell className={"flex justify-end"}>
-                        <Button variant={"outline"} size={"icon"}>
+                        <Button
+                          variant={"outline"}
+                          size={"icon"}
+                          onClick={() => {
+                            handleRemoveBook(index);
+                          }}
+                        >
                           <Trash2 className={"w-4 h-4 text-destructive"} />
                         </Button>
                       </TableCell>
@@ -199,7 +315,7 @@ const AddCheckout = () => {
                 </TableBody>
               </Table>
               <div className={"mt-2"}>
-                <Button>
+                <Button onClick={handleAddMore} variant={"outline"}>
                   <Plus className={"w-4 h-4"} />
                   Add More
                 </Button>
